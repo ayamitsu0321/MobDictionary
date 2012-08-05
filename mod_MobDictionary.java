@@ -20,7 +20,7 @@ public class mod_MobDictionary extends BaseMod
 	
 	public String getVersion()
 	{
-		return "1.2.5_v0.0.1";
+		return "1.3.1_v0.0.2";
 	}
 	
 	public void load()
@@ -34,7 +34,7 @@ public class mod_MobDictionary extends BaseMod
 		else
 		{
 			//addItem
-			dictionary = (new ItemMobDictionary(id - 256)).setIconCoord(11, 3).setItemName("dictionary");
+			dictionary = (new ItemMobDictionary(id - 256)).setIconCoord(11, 3).setItemName("dictionary").setTabToDisplayOn(CreativeTabs.tabMisc);;
 			ModLoader.addName(dictionary, "Mob Dictionary");
 			//add recipe
 			ModLoader.addShapelessRecipe(new ItemStack(dictionary, 1), new Object[]
@@ -52,7 +52,7 @@ public class mod_MobDictionary extends BaseMod
 		File file = new File(fileName);
 		
 		//read from file
-		if (file != null)
+		if (file.exists())
     	for (int i = 0; i < MobDictionary.readFile().length; i++)
 		{
 			MobDictionary.addInfo(MobDictionary.readFile()[i]);

@@ -25,13 +25,16 @@ public class ItemMobDictionary extends Item
 	@Override
 	public int getDamageVsEntity(Entity entity)
     {
-    	if (entity instanceof EntityLiving)
+    	if (!entity.worldObj.isRemote)
     	{
-    		//register Entity to Dictionary
-	    	EntityPlayer player = ModLoader.getMinecraftInstance().thePlayer;
-	    	String name = EntityList.getEntityString(entity);
-	    	String msg = MobDictionary.addInfo(entity.getClass()) ? "register " + name : "already registered " + name;
-	    	player.addChatMessage(msg);
+	    	if (entity instanceof EntityLiving)
+	    	{
+	    		//register Entity to Dictionary
+		    	EntityPlayer player = ModLoader.getMinecraftInstance().thePlayer;
+		    	String name = EntityList.getEntityString(entity);
+		    	String msg = MobDictionary.addInfo(entity.getClass()) ? "register " + name : "already registered " + name;
+		    	player.addChatMessage(msg);
+	    	}
     	}
     	
         return 0;
@@ -41,7 +44,6 @@ public class ItemMobDictionary extends Item
 	@Override
 	public void addInformation(ItemStack itemstack, List list)
     {
-    	
     	String s1 = String.valueOf(MobDictionary.getDicRegisteredValue());
     	String s2 = String.valueOf(MobDictionary.getEntityValueOfTypes());
     	String inf = (new StringBuilder()).append(s1).append("/").append(s2).toString();

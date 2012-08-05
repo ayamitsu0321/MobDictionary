@@ -39,6 +39,7 @@ public class RegisterDictionary extends PlayerBase
 	public void writeEntityToNBT(NBTTagCompound nbt)
 	{
 		//write to file
+		//System.out.println("Write");
 		MobDictionary.writeFile();
 		super.writeEntityToNBT(nbt);
 	}

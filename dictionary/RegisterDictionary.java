@@ -2,9 +2,9 @@ package net.minecraft.src.dictionary;
 
 import net.minecraft.src.*;
 
-public class RegisterDictionary extends PlayerBase
+public class RegisterDictionary extends ServerPlayerBase
 {
-	public RegisterDictionary(PlayerAPI api)
+	public RegisterDictionary(ServerPlayerAPI api)
 	{
 		super(api);
 	}

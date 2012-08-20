@@ -4,6 +4,7 @@ import net.minecraft.src.*;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 public class GuiMobDictionary extends GuiScreen
@@ -17,6 +18,17 @@ public class GuiMobDictionary extends GuiScreen
     private int scrollHeight = 0;
     private final int stringColor = 0x303030;
 	private Entity entity = null;
+	boolean controlModel = false;
+	boolean controlRot = false;
+	private float rotH = 0.0F;//êÖïΩï˚å¸ÇÃâÒì]
+	private float rotV = 0.0F;//êÇíºï˚å¸ÇÃâÒì]
+	private float traH = 0.0F;//êÖïΩï˚å¸ÇÃà íu
+	private float traV = 0.0F;//êÖïΩï˚å¸ÇÃà íu
+	private int rotTick = 0;
+	private static String[] controlMode = new String[] {
+		"Rotation", "Translation"
+	};
+	private boolean showMode = true;
 	
 	public GuiMobDictionary(InventoryPlayer inv)
 	{
@@ -56,6 +68,12 @@ public class GuiMobDictionary extends GuiScreen
 		int j = (width - xSize) / 2;
         int k = (height - ySize) / 2;
         drawTexturedModalRect(j, k, 0, 0, xSize, ySize);
+		//modeÇÃï\é¶
+		if (controlModel && showMode)
+		{
+			String mode = controlRot ? controlMode[0] : controlMode[1];
+			this.fontRenderer.drawString("Mode:" + mode, j + 3, k - 7, 16777215);
+		}
 	}
 	
 	//draw completed value, name, id, health
@@ -170,6 +188,27 @@ public class GuiMobDictionary extends GuiScreen
         }
     }
 	
+	public void updateScreen()
+	{
+		if (Keyboard.getEventKeyState())
+		{
+			rotTick++;
+			
+			switch (Keyboard.getEventKey())
+			{
+				//Å™, Å©, Å´, Å®
+    			case 200: doControlVertical(true); break;
+    			case 203: doControlHorizon(false); break;
+    			case 208: doControlVertical(false); break;
+    			case 205: doControlHorizon(true); break;
+			}
+		}
+		else
+		{
+			rotTick = 0;
+		}
+	}
+	
 	protected void keyTyped(char par1, int par2)
     {
     	//'E' or inventory trigger key
@@ -178,7 +217,47 @@ public class GuiMobDictionary extends GuiScreen
         	//close GUI
             mc.thePlayer.closeScreen();
         }
+    	else if (par2 == 44)
+    	{
+    		controlModel = !controlModel;
+    	}
+    	else if (par2 == 45)
+    	{
+    		controlRot = !controlRot;
+    	}
+    	else if (par2 == 46)
+    	{
+    		showMode = !showMode;
+    	}
     }
+	
+	private void doControlHorizon(boolean flag)
+	{
+		float f = flag ? 0.5F : -0.5F;
+		float f1 = flag ? (float)(rotTick & 0xff) * 0.05F : -(float)(rotTick & 0xff) * 0.05F;
+		if (controlRot)
+		{
+			rotH = rotH + f + f1;
+		}
+		else
+		{
+			traH = traH + (f + f1) * 0.1F;
+		}
+	}
+	
+	private void doControlVertical(boolean flag)
+	{
+		float f = flag ? -0.5F : 0.5F;
+		float f1 = flag ? -(float)(rotTick & 0xff) * 0.05F : (float)(rotTick & 0xff) * 0.05F;
+		if (controlRot)
+		{
+			rotV = rotV + f + f1;
+		}
+		else
+		{
+			traV = traV + (f + f1) * 0.1F;
+		}
+	}
 	
 	//draw entity
 	protected void drawMobModel(float var1, int var2, int var3, String var4)//f, x, y, entityname
@@ -226,10 +305,21 @@ public class GuiMobDictionary extends GuiScreen
 			GL11.glScalef(-scale, scale, scale);
 			GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
 			//RenderHelper.enableStandardItemLighting();
-			float xRot = (float)(mod_MobDictionary.yaw2 + (mod_MobDictionary.yaw - mod_MobDictionary.yaw2) * var1 * 10F);
-			GL11.glRotatef(xRot, 0.0F, 1.0F, 0.0F);
 			float advance = entity instanceof EntitySquid ? 1.125F : entity instanceof EntityGhast || entity instanceof EntityDragon ? 2.8F : 0.0F;
-			GL11.glTranslatef(0.0F, entity.yOffset + advance, 0.0F);
+			//GL11.glTranslatef(0.0F, entity.yOffset + advance, 0.0F);
+			GL11.glTranslatef(0.0F, 0.0F + advance, 0.0F);
+			if (!controlModel)
+			{
+				float xRot = (float)(mod_MobDictionary.yaw2 + (mod_MobDictionary.yaw - mod_MobDictionary.yaw2) * var1 * 10F);
+				GL11.glRotatef(xRot, 0.0F, 1.0F, 0.0F);
+			}
+			else
+			{
+				GL11.glRotatef(rotH, 0.0F, 1.0F, 0.0F);
+				GL11.glRotatef(rotV, 1.0F, 0.0F, 0.0F);
+				GL11.glTranslatef(traH, 0.0F, traH);
+				GL11.glTranslatef(0.0F, traV, 0.0F);
+			}
 			RenderManager.instance.playerViewY = 180F;
 			RenderManager.instance.renderEntityWithPosYaw(entity, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
 			GL11.glPopMatrix();

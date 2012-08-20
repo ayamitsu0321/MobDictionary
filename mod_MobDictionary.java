@@ -8,6 +8,7 @@ import java.io.File;
 
 public class mod_MobDictionary extends BaseMod
 {
+	//#009F00
 	private static Item dictionary;
 	@MLProp(info = "Dictionary's ItemID")
 	public static int id = 23356;//dictionary's id
@@ -20,7 +21,7 @@ public class mod_MobDictionary extends BaseMod
 	
 	public String getVersion()
 	{
-		return "1.3.1_v0.0.2";
+		return "1.3.2_v0.0.2";
 	}
 	
 	public void load()
@@ -82,7 +83,7 @@ public class mod_MobDictionary extends BaseMod
 	public void modsLoaded()
 	{
 		//for save file
-		PlayerAPI.register("RegisterDictionary", RegisterDictionary.class);
+		ServerPlayerAPI.register("RegisterDictionary", RegisterDictionary.class);
 		//get kind of entity's value
 		MobDictionary.setEntityValueOfTypes();
 	}

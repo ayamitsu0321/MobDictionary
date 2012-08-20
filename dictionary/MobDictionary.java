@@ -227,6 +227,15 @@ public class MobDictionary
 	//write to file, save
 	protected static void writeFile()
 	{
+		String path = ModLoader.getMinecraftInstance().getMinecraftDir() + "/config/dictionary";
+		File dir = new File(path);
+		
+		//not exist directory ?
+		if (!dir.exists())
+		{
+			dir.mkdirs();
+		}
+		
 		String[] str = getNames_file();
 		String fileName = ModLoader.getMinecraftInstance().getMinecraftDir() + "/config/dictionary/mobdic.md";
 		File file = new File(fileName);

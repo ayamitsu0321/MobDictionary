@@ -292,7 +292,7 @@ public class GuiMobDictionary extends GuiScreen
 			GL11.glPushMatrix();
 			GL11.glTranslatef(j + 49, k + 70, 50F);
 			float size = MathHelper.sqrt_float(entity.height * entity.height + entity.width * entity.width);
-			float defScale = 60F;
+			float defScale = 80F;//60F;
 			float scale = defScale * 0.4F / size;
 			if (entity instanceof EntityDragon)
 			{

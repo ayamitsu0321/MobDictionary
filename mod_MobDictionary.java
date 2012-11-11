@@ -19,14 +19,18 @@ public class mod_MobDictionary extends BaseMod
 	@MLProp(info = "Key Set ? not add Dictionary & recipe &, set key B")
 	public static boolean isKeySet = false;
 	
+	World prevWorld;
+	GuiScreen prevGui;
+	
 	public String getVersion()
 	{
-		return "1.3.2_v0.0.2";
+		return "1.4.4_v0.0.4";
 	}
 	
 	public void load()
 	{
 		ModLoader.setInGameHook(this, true, false);
+		ModLoader.setInGUIHook(this, true, true);
 		
 		if (isKeySet)
 		{
@@ -35,7 +39,7 @@ public class mod_MobDictionary extends BaseMod
 		else
 		{
 			//addItem
-			dictionary = (new ItemMobDictionary(id - 256)).setIconCoord(11, 3).setItemName("dictionary").setTabToDisplayOn(CreativeTabs.tabMisc);;
+			dictionary = (new ItemMobDictionary(id - 256)).setIconCoord(11, 3).setItemName("dictionary").setCreativeTab(CreativeTabs.tabMisc);;
 			ModLoader.addName(dictionary, "Mob Dictionary");
 			//add recipe
 			ModLoader.addShapelessRecipe(new ItemStack(dictionary, 1), new Object[]
@@ -48,22 +52,13 @@ public class mod_MobDictionary extends BaseMod
 				});
 		}
 		
-		//read file
-		String fileName = ModLoader.getMinecraftInstance().getMinecraftDir() + "/config/dictionary/mobdic.md";
-		File file = new File(fileName);
-		
-		//read from file
-		if (file.exists())
-    	for (int i = 0; i < MobDictionary.readFile().length; i++)
-		{
-			MobDictionary.addInfo(MobDictionary.readFile()[i]);
-		}
-		
 		//register giant
-		if (registerGiant)
+		if (this.registerGiant)
 		{
 			MobDictionary.addInfo("Giant");
 		}
+		
+		SaveManager.init();
 	}
 	
 	//on dictionary's gui, rotate entity
@@ -80,10 +75,14 @@ public class mod_MobDictionary extends BaseMod
         return true;
     }
 	
+	public boolean onTickInGUI(float f, Minecraft mc, GuiScreen guiscreen)
+	{
+		SaveManager.update(mc, guiscreen);
+		return true;
+	}
+	
 	public void modsLoaded()
 	{
-		//for save file
-		ServerPlayerAPI.register("RegisterDictionary", RegisterDictionary.class);
 		//get kind of entity's value
 		MobDictionary.setEntityValueOfTypes();
 	}

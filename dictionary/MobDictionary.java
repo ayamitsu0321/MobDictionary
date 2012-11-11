@@ -8,14 +8,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Collections;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.FileNotFoundException;
 import java.lang.ClassCastException;
 import java.lang.reflect.Modifier;
 
@@ -221,82 +213,5 @@ public class MobDictionary
 		int id = new Integer(str).intValue();
 		Map IDtoClassMapping = getEntityMap(2); 
 		return IDtoClassMapping != null && IDtoClassMapping.containsKey(id);
-	}
-//file
-	
-	//write to file, save
-	protected static void writeFile()
-	{
-		String path = ModLoader.getMinecraftInstance().getMinecraftDir() + "/config/dictionary";
-		File dir = new File(path);
-		
-		//not exist directory ?
-		if (!dir.exists())
-		{
-			dir.mkdirs();
-		}
-		
-		String[] str = getNames_file();
-		String fileName = ModLoader.getMinecraftInstance().getMinecraftDir() + "/config/dictionary/mobdic.md";
-		File file = new File(fileName);
-		
-		try
-		{
-			FileOutputStream fos = new FileOutputStream(fileName);
-			OutputStreamWriter osw = new OutputStreamWriter(fos);
-			PrintWriter pw = new PrintWriter(osw);
-			
-			for (int i = 0; i < str.length; i++)
-			{
-				pw.println(str[i]);
-			}
-			
-			pw.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	//read from file
-	public static String[] readFile()
-	{
-		String path = ModLoader.getMinecraftInstance().getMinecraftDir() + "/config/dictionary";
-		File dir = new File(path);
-		
-		//not exist directory ?
-		if (!dir.exists())
-		{
-			dir.mkdirs();
-		}
-		
-		String fileName = ModLoader.getMinecraftInstance().getMinecraftDir() + "/config/dictionary/mobdic.md";
-		File file = new File(fileName);
-		
-		try
-		{
-			FileInputStream fis = new FileInputStream(fileName);
-			InputStreamReader isr = new InputStreamReader(fis);
-			BufferedReader br = new BufferedReader(isr);
-
-			List list = new ArrayList();
-			String str = null;
-			
-			while ((str = br.readLine()) != null)
-			{
-				list.add(str);
-			}
-			
-			br.close();
-			String[] array = (String[])list.toArray(new String[0]);
-			return array;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 }

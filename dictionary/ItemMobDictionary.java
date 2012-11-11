@@ -42,7 +42,7 @@ public class ItemMobDictionary extends Item
 	
 	//display completed value
 	@Override
-	public void addInformation(ItemStack itemstack, List list)
+    public void addInformation(ItemStack is, EntityPlayer player, List list, boolean par4)
     {
     	String s1 = String.valueOf(MobDictionary.getDicRegisteredValue());
     	String s2 = String.valueOf(MobDictionary.getEntityValueOfTypes());
@@ -52,7 +52,7 @@ public class ItemMobDictionary extends Item
     }
 	
 	@Override
-	public int getColorFromDamage(int par1, int par2)
+	public int getColorFromItemStack(ItemStack is, int layer)
     {
     	//ûwîÁêF hiwada
         return 0x965036;

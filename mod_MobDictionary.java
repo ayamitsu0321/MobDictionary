@@ -24,7 +24,7 @@ public class mod_MobDictionary extends BaseMod
 	
 	public String getVersion()
 	{
-		return "1.4.4_v0.0.4";
+		return "1.4.6_v0.0.5";
 	}
 	
 	public void load()

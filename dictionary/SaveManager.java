@@ -110,6 +110,12 @@ public final class SaveManager
 		}
 		
 		File file = new File(getFile());
+		
+		if (!file.exists())
+		{
+			return;
+		}
+		
 		List list = new ArrayList();
 		
 		try

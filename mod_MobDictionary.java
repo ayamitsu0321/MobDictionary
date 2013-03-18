@@ -1,100 +1,108 @@
 package net.minecraft.src;
 
-import net.minecraft.src.dictionary.*;
-import net.minecraft.client.Minecraft;
-import java.util.List;
-import java.util.ArrayList;
-import java.io.File;
+import java.io.IOException;
 
-public class mod_MobDictionary extends BaseMod
-{
-	//#009F00
-	private static Item dictionary;
-	@MLProp(info = "Dictionary's ItemID")
-	public static int id = 23356;//dictionary's id
-	public static double yaw = 0D;//use on gui, entity rotate
-	public static double yaw2 = 0D;//use on gui, entity rotate
-	@MLProp(info = "Register GiantZombie ?")
+import org.lwjgl.input.Keyboard;
+
+import net.minecraft.client.Minecraft;
+import ayamitsu.dictionary.GuiMobDictionary;
+import ayamitsu.dictionary.ItemMobDictionary;
+import ayamitsu.dictionary.MobDictionary;
+
+public class mod_MobDictionary extends BaseMod {
+
+	public static Item dictionary;
+
+	@MLProp(info = "dictionary item id")
+	public static int dictionaryId = 23356;
+
+	@MLProp(info = "register Giant")
 	public static boolean registerGiant = false;
-	@MLProp(info = "Key Set ? not add Dictionary & recipe &, set key B")
+
+	@MLProp(info = "if true, pressed B key open gui")
 	public static boolean isKeySet = false;
-	
-	World prevWorld;
-	GuiScreen prevGui;
-	
+
+	private GuiScreen prevGui;
+
+	@Override
 	public String getVersion()
 	{
-		return "1.4.6_v0.0.5";
+		return "1.5.0-v1.0.0";
 	}
-	
+
+	@Override
 	public void load()
 	{
-		ModLoader.setInGameHook(this, true, false);
+		try
+		{
+			MobDictionary.load();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
 		ModLoader.setInGUIHook(this, true, true);
-		
-		if (isKeySet)
-		{
-			ModLoader.registerKey(this, new KeyBinding("MobDictionary", 48), false);//'B'
-		}
-		else
-		{
-			//addItem
-			dictionary = (new ItemMobDictionary(id - 256)).setIconCoord(11, 3).setItemName("dictionary").setCreativeTab(CreativeTabs.tabMisc);;
-			ModLoader.addName(dictionary, "Mob Dictionary");
-			//add recipe
-			ModLoader.addShapelessRecipe(new ItemStack(dictionary, 1), new Object[]
-				{
-					new ItemStack(Item.book,1),
-					new ItemStack(Block.sapling, 1, 0),
-					new ItemStack(Block.sapling, 1, 1),
-					new ItemStack(Block.sapling, 1, 2),
-					new ItemStack(Block.sapling, 1, 3)
-				});
-		}
-		
-		//register giant
+		this.dictionary = new ItemMobDictionary(this.dictionaryId).setUnlocalizedName("dictionary").setCreativeTab(CreativeTabs.tabMisc);
+		ModLoader.addName(this.dictionary, "Mob Dictionary");
+		//add recipe
+		ModLoader.addShapelessRecipe(new ItemStack(this.dictionary, 1),
+				new Object[] {
+				new ItemStack(Item.book,1),
+				new ItemStack(Block.sapling, 1, 0),
+				new ItemStack(Block.sapling, 1, 1),
+				new ItemStack(Block.sapling, 1, 2),
+				new ItemStack(Block.sapling, 1, 3)
+			}
+		);
+
 		if (this.registerGiant)
 		{
 			MobDictionary.addInfo("Giant");
 		}
-		
-		SaveManager.init();
+
+		if (this.isKeySet)
+		{
+			ModLoader.registerKey(this, new KeyBinding("Open Dictionary", Keyboard.KEY_B), false);// B
+		}
 	}
-	
-	//on dictionary's gui, rotate entity
-	public boolean onTickInGame(float f, Minecraft mc)
-    {
-    	yaw2 = yaw;
-    	
-    	for (yaw += 0.2F * 10F; yaw > 360D;)
-    	{
-        	yaw -= 360D;
-        	yaw2 -= 360D;
-    	}
-    	
-        return true;
-    }
-	
-	public boolean onTickInGUI(float f, Minecraft mc, GuiScreen guiscreen)
+
+	public void keyboardEvent(KeyBinding key)
 	{
-		SaveManager.update(mc, guiscreen);
+		if (ModLoader.getMinecraftInstance().theWorld != null && ModLoader.getMinecraftInstance().thePlayer != null)
+		{
+			ModLoader.getMinecraftInstance().displayGuiScreen(new GuiMobDictionary());
+		}
+	}
+
+	@Override
+	public boolean onTickInGUI(float f, Minecraft mc, GuiScreen guiScreen)
+	{
+		if (guiScreen == this.prevGui)
+		{
+			return true;
+		}
+
+		this.prevGui = guiScreen;
+
+		if (this.prevGui instanceof GuiIngameMenu)
+		{
+			try
+			{
+				MobDictionary.save();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
 		return true;
 	}
-	
+
+	@Override
 	public void modsLoaded()
 	{
-		//get kind of entity's value
-		MobDictionary.setEntityValueOfTypes();
+		MobDictionary.initAllMobValue();
 	}
-	
-	public void keyboardEvent(KeyBinding var1)
-    {
-    	if (isKeySet)
-    	{
-	        if (var1.keyDescription == "MobDictionary")
-	        {
-	        	ModLoader.openGUI(ModLoader.getMinecraftInstance().thePlayer, new GuiMobDictionary(ModLoader.getMinecraftInstance().thePlayer.inventory));
-	        }
-    	}
-    }
 }

@@ -1,4 +1,4 @@
-yMODzMobDictionary-1.5.0-v1.0.0
+yMODzMobDictionary-1.5.1-v1.0.0
 
 yŠT—vz
 mob‚ð‹L˜^‚·‚é}ŠÓ‚ð’Ç‰Á‚µ‚Ü‚·B

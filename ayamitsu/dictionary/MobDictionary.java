@@ -97,7 +97,12 @@ public final class MobDictionary
 		nameList.clear();
 		File file = getSaveFile();
 
-		if (!file.exists() || !file.canRead())
+		if (!file.exists())
+		{
+			return;
+		}
+		
+		if (!file.canRead())
 		{
 			throw new IOException("Can not read dictionary data:" + file.getPath());
 		}

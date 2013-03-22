@@ -27,7 +27,7 @@ public class mod_MobDictionary extends BaseMod {
 	@Override
 	public String getVersion()
 	{
-		return "1.5.0-v1.0.0";
+		return "v1.0.0";
 	}
 
 	@Override

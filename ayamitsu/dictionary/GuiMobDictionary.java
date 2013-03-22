@@ -69,7 +69,7 @@ public class GuiMobDictionary extends GuiScreen
 	public void drawGuiContainerBackgroundLayer(float f, int x, int y)
 	{
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.func_98187_b("/ayamitsu/dictionary/dic_book.png");
+		this.mc.renderEngine.bindTexture("/ayamitsu/dictionary/dic_book.png");
 		int j = (this.width - this.xSize) / 2;
 		int k = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(j, k, 0, 0, this.xSize, this.ySize);

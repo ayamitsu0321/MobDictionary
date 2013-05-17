@@ -1,11 +1,11 @@
-package ayamitsu.dictionary;
+package ayamitsu.util.entity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
-import net.minecraft.src.EntityList;
-import net.minecraft.src.EntityLiving;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 
 public final class EntityUtils
 {

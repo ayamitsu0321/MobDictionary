@@ -1,155 +1,154 @@
 package ayamitsu.dictionary;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.src.Entity;
-import net.minecraft.src.StatCollector;
+import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
-public final class MobDictionary
+import ayamitsu.dictionary.item.ItemMobDictionary;
+import ayamitsu.dictionary.network.EnumChannel;
+import ayamitsu.util.io.Configuration;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.LanguageRegistry;
+
+@Mod(
+	modid = "ayamitsu.dictionary",
+	name = "MobDictionary",
+	version = "2.0.0"
+)
+@NetworkMod(
+	clientSideRequired = true,
+	serverSideRequired = true,
+	connectionHandler = ayamitsu.dictionary.network.ConnectionHandler.class,
+	packetHandler = ayamitsu.dictionary.network.PacketHandler.class,
+	channels = { "mobdic.addinfo.0", "mobdic.addinfo.1" }
+)
+public class MobDictionary
 {
-	private static final Set<String> nameList = new HashSet<String>();
-	private static int allMobValue;
+	@Mod.Instance("ayamitsu.dictionary")
+	public static MobDictionary instance;
 
-	private MobDictionary() {}
+	public static Item dictionaryItem;
 
-	/**
-	 * if return true, already contains
-	 */
-	public static boolean addInfo(Class clazz)
+	public static int dictionaryItemId;
+
+	@Mod.PreInit
+	public void preInit(FMLPreInitializationEvent event)
 	{
-		if (EntityUtils.isLivingClass(clazz))
+		Configuration conf = new Configuration(event.getSuggestedConfigurationFile());
+
+		try
 		{
-			return !nameList.add(EntityUtils.getNameFromClass(clazz));
+			conf.load();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 
-		return false;
+		this.dictionaryItemId = conf.getProperty("dictionaryItemId", 23356).getInt();
+
+		try
+		{
+			conf.save();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@Mod.Init
+	public void init(FMLInitializationEvent event)
+	{
+		this.dictionaryItem = new ItemMobDictionary(this.dictionaryItemId).setUnlocalizedName("dictionary").setCreativeTab(CreativeTabs.tabMisc);
+		LanguageRegistry.instance().addNameForObject(this.dictionaryItem, "en_US", "Mob Dictionary");
+		LanguageRegistry.instance().addNameForObject(this.dictionaryItem, "ja_JP", "モブ図鑑");
+
+		GameRegistry.addShapelessRecipe(new ItemStack(this.dictionaryItem, 1),
+				new Object[] {
+				new ItemStack(Item.book,1),
+				new ItemStack(Block.sapling, 1, 0),
+				new ItemStack(Block.sapling, 1, 1),
+				new ItemStack(Block.sapling, 1, 2),
+				new ItemStack(Block.sapling, 1, 3)
+			}
+		);
+
+		LanguageRegistry.instance().addStringLocalization("mobdic.register.accept", "en_US", "Registered %1$s to MobDictionary by %2$s !!");
+		LanguageRegistry.instance().addStringLocalization("mobdic.register.already", "en_US", "Already registered %s !!");
+		LanguageRegistry.instance().addStringLocalization("mobdic.register.error", "en_US", "Couldn't register %s, it's not mob !!");
+		LanguageRegistry.instance().addStringLocalization("mobdic.register.accept", "ja_JP", "%2$sによってモブ図鑑に%1$sが登録されました!!");
+		LanguageRegistry.instance().addStringLocalization("mobdic.register.already", "ja_JP", "モブ図鑑に%sは既に登録されています。");
+		LanguageRegistry.instance().addStringLocalization("mobdic.register.error", "ja_JP", "%sは登録できませんでした。Mobじゃないでしょう。");
+		LanguageRegistry.instance().addStringLocalization("mobdic.register.completed", "en_US", "Completed");
+		LanguageRegistry.instance().addStringLocalization("mobdic.register.completed", "ja_JP", "登録数");
+	}
+
+	@Mod.PostInit
+	public void postInit(FMLPostInitializationEvent event)
+	{
+		MobDatas.initAllMobValue();
+	}
+
+	@Mod.ServerStarted
+	public void serverStarted(FMLServerStartedEvent event)
+	{
+		try
+		{
+			MobDatas.load();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	@Mod.ServerStopped
+	public void serverStopped(FMLServerStoppedEvent event)
+	{
+		try
+		{
+			MobDatas.save();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
-	 * if return true, already contains
+	 *  client only
+	 *  call on PlayerControllerMP func_78768_b(EntityPlayer, Entity)
+	 *  insert this method from coremods
 	 */
-	public static boolean addInfo(String name)
+	public static void interactWithEntity(EntityPlayer player, Entity entity)
 	{
-		if (EntityUtils.isLivingName(name))
+		if (entity instanceof EntityLiving)
 		{
-			return !nameList.add(name);
-		}
+			ItemStack itemStack = player.inventory.getCurrentItem();
 
-		return false;
-	}
-
-	public static int registeredValue()
-	{
-		return nameList.size();
-	}
-
-	public static void initAllMobValue()
-	{
-		Set set = new HashSet();
-		Map classToStringMapping = EntityUtils.getClassToStringMapping();
-
-		for (Object obj : classToStringMapping.keySet())
-		{
-			if (obj instanceof Class && EntityUtils.isLivingClass((Class)obj))
+			if (!player.isSneaking() && itemStack != null && itemStack.itemID == dictionaryItem.itemID)
 			{
-				set.add(obj);
+				MobDatas.addInfo(EntityList.getEntityString(entity), player);
 			}
 		}
-
-		allMobValue = set.size();
-	}
-
-	public static int getAllMobValue()
-	{
-		return allMobValue;
-	}
-
-	public static String[] toArray()
-	{
-		return nameList.toArray(new String[0]);
-	}
-
-	public static String[] getDisplayNames()
-	{
-		String[] names = nameList.toArray(new String[0]);
-		Arrays.sort(names);
-
-		for (int i = 0; i < names.length; i++)
-		{
-			names[i] = StatCollector.translateToLocal("entity." + names[i] + ".name");
-		}
-
-		return names;
-	}
-
-	public static void load() throws IOException
-	{
-		nameList.clear();
-		File file = getSaveFile();
-
-		if (!file.exists())
-		{
-			return;
-		}
-		
-		if (!file.canRead())
-		{
-			throw new IOException("Can not read dictionary data:" + file.getPath());
-		}
-
-		BufferedReader br = new BufferedReader(new FileReader(file));
-		String line;
-
-		while ((line = br.readLine()) != null)
-		{
-			addInfo(line.trim());
-		}
-
-		br.close();
-	}
-
-	public static void save() throws IOException
-	{
-		File file = getSaveFile();
-		File dir = file.getParentFile();
-
-		if (!dir.exists() && !dir.mkdirs())
-		{
-			throw new IOException("Can not write dictionary data:" + file.getPath());
-		}
-
-		if (!file.exists() && !file.createNewFile())
-		{
-			throw new IOException("Can not write dictionary data:" + file.getPath());
-		}
-
-		if (!file.canWrite())
-		{
-			throw new IOException("Can not write dictionary data:" + file.getPath());
-		}
-
-		PrintWriter pw = new PrintWriter(new FileOutputStream(file));
-
-		for (String name : nameList)
-		{
-			pw.println(name);
-		}
-
-		pw.close();
-	}
-
-	public static File getSaveFile()
-	{
-		return (new File(Minecraft.getMinecraftDir(), "config/dictionary/mobdic.md")).getAbsoluteFile();
 	}
 }

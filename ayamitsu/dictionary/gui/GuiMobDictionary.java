@@ -1,13 +1,28 @@
-package ayamitsu.dictionary;
+package ayamitsu.dictionary.gui;
 
 import java.util.Arrays;
 
-import net.minecraft.src.*;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.passive.EntitySquid;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import cpw.mods.fml.client.FMLClientHandler;
+
+import ayamitsu.dictionary.MobDatas;
 
 public class GuiMobDictionary extends GuiScreen
 {
@@ -31,8 +46,8 @@ public class GuiMobDictionary extends GuiScreen
 		"Rotation", "Translation"
 	};
 	private boolean showMode = true;
-	protected int registerdValue = MobDictionary.registeredValue();
-	protected int allMobValue = MobDictionary.getAllMobValue();
+	protected int registerdValue;
+	protected int allMobValue = MobDatas.getAllMobValue();
 	protected double yaw = 0.0D;
 	protected double yaw2 = 0.0D;
 
@@ -41,7 +56,9 @@ public class GuiMobDictionary extends GuiScreen
 		super();
 		this.xSize = 176;
 		this.ySize = 166;
-		this.names = MobDictionary.toArray();//nameList
+		this.names = MobDatas.toArray();
+		this.registerdValue = this.names.length;
+
 		Arrays.sort(this.names);
 
 		if (this.names.length > 0)
@@ -57,12 +74,20 @@ public class GuiMobDictionary extends GuiScreen
 	}
 
 	@Override
+	public boolean doesGuiPauseGame()
+    {
+        return false;
+    }
+
+	@Override
 	public void drawScreen(int x, int y, float f)
 	{
+		this.yaw2 = this.yaw;
 		this.drawDefaultBackground();
 		this.drawGuiContainerBackgroundLayer(f, x, y);
 		this.drawNames(f, x, y);
 		super.drawScreen(x, y, f);
+		this.yaw = 2.0D + yaw2 + (yaw2 - yaw) * f;
 	}
 
 	//backdround
@@ -198,14 +223,6 @@ public class GuiMobDictionary extends GuiScreen
 	@Override
 	public void updateScreen()
 	{
-		this.yaw2 = this.yaw;
-
-		for (this.yaw += 2.0D; this.yaw > 360.0D; )
-		{
-			this.yaw -= 360.0D;
-			this.yaw2 -= 360.0D;
-		}
-
 		if (Keyboard.getEventKeyState())
 		{
 			this.rotTick++;
@@ -350,4 +367,5 @@ public class GuiMobDictionary extends GuiScreen
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	}
+
 }

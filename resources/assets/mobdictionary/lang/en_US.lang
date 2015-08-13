@@ -1,0 +1,10 @@
+item.mobdictionary.dictionary.name=Mob Dictionary
+item.mobdictionary.data.name=Piece of Dictionary
+itemGroup.mobdictionary=Mob Dictionary
+mobdictionary.common.name=Name
+mobdictionary.common.register_accept=Registered %s to MobDictionary !
+mobdictionary.common.register_already=Already registered %s !
+mobdictionary.common.register_error=Couldn't register %s !
+mobdictionary.common.registered_value=Registered
+mobdictionary.common.output_piece=Ouput Piece
+mobdictionary.common.need_a_paper=need a paper

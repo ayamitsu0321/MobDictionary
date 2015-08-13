@@ -1,0 +1,10 @@
+item.mobdictionary.dictionary.name=モブ図鑑
+item.mobdictionary.data.name=図鑑の紙片
+itemGroup.mobdictionary=モブ図鑑
+mobdictionary.common.name=名前
+mobdictionary.common.register_accept=%sが登録されました!
+mobdictionary.common.register_already=%sは既に登録されています。
+mobdictionary.common.register_error=%sは登録できませんでした。
+mobdictionary.common.registered_value=登録数
+mobdictionary.common.output_piece=紙片を出力
+mobdictionary.common.need_a_paper=紙が1枚必要

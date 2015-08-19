@@ -6,8 +6,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
-import java.util.UUID;
-
 /**
  * Created by ayamitsu0321 on 2015/08/06.
  */

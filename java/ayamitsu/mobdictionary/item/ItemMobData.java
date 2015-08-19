@@ -4,7 +4,6 @@ import ayamitsu.mobdictionary.MobDatas;
 import ayamitsu.mobdictionary.MobDictionary;
 import ayamitsu.mobdictionary.util.EntityUtils;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;

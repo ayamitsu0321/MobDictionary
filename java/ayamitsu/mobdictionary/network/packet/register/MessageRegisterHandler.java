@@ -4,7 +4,6 @@ import ayamitsu.mobdictionary.MobDatas;
 import ayamitsu.mobdictionary.MobDictionary;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -24,7 +23,7 @@ public class MessageRegisterHandler implements IMessageHandler<MessageRegister, 
 
         if (player.getUniqueID().toString().equals(message.getUUIDString()) && entity instanceof EntityLivingBase) {
             EntityLivingBase target = (EntityLivingBase)entity;
-            System.out.println(target.getName());
+            //System.out.println(target.getName());
 
             if (MobDictionary.proxy.isDedicatedServer()) {
                 MobDatas.addInfoOnDedicatedServer(target.getClass(), player);

@@ -12,10 +12,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -111,7 +112,7 @@ public class ItemMobDictionary extends Item {
     }
 
     // client
-    public static void showChatMessage(EnumChatMessage chatMessage, Object ... objects) {
+    public static void showChatMessage(EnumChatMessage chatMessage, Object... objects) {
         IChatComponent chatComponent = new ChatComponentText(chatMessage.getTranslatedText(objects));
         MobDictionary.proxy.printChatMessageClient(chatComponent);
     }
@@ -144,7 +145,7 @@ public class ItemMobDictionary extends Item {
             return this.text;
         }
 
-        public String getTranslatedText(Object ... objects) {
+        public String getTranslatedText(Object... objects) {
             return StatCollector.translateToLocalFormatted(this.text, objects);
         }
 

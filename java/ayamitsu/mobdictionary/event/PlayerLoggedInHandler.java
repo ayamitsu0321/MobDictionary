@@ -20,7 +20,7 @@ public class PlayerLoggedInHandler {
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         //System.out.println("onPlayerLoggedIn");
 
-        if (event.player instanceof EntityPlayerMP){
+        if (event.player instanceof EntityPlayerMP) {
             EntityPlayerMP player = (EntityPlayerMP)event.player;
 
             if (MobDictionary.proxy.isDedicatedServer()) {// dedicated server

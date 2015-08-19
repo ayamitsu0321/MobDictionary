@@ -37,7 +37,8 @@ public abstract class AbstractProxy {
         return null;
     }
 
-    public void printChatMessageClient(IChatComponent chatComponent) {}
+    public void printChatMessageClient(IChatComponent chatComponent) {
+    }
 
 }
 

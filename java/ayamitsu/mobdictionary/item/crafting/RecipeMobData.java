@@ -5,11 +5,8 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 /**
  * Created by ayamitsu0321 on 2015/08/06.
@@ -65,11 +62,10 @@ public class RecipeMobData implements IRecipe {
     }
 
     @Override
-    public ItemStack[] func_179532_b(InventoryCrafting p_179532_1_) {
+    public ItemStack[] getRemainingItems(InventoryCrafting p_179532_1_) {
         ItemStack[] aitemstack = new ItemStack[p_179532_1_.getSizeInventory()];
 
-        for (int i = 0; i < aitemstack.length; ++i)
-        {
+        for (int i = 0; i < aitemstack.length; ++i) {
             ItemStack itemstack = p_179532_1_.getStackInSlot(i);
             aitemstack[i] = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
         }

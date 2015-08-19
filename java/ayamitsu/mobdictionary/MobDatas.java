@@ -12,7 +12,7 @@ import java.util.*;
  * integrated server
  * loadはプレイヤーがログイン時にserver側で。その後serverからclientnに同期
  * saveは登録時
- *
+ * <p/>
  * dedicated server
  * loadはプレイヤーがログイン時にserver側で。その後serverからclientに同期
  * saveは登録時、プレイヤーのUUIDに関連付けて

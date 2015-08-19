@@ -18,7 +18,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Mouse;
@@ -138,7 +137,7 @@ public class GuiMobDictionary extends GuiScreen {
         if (this.nameList.length > 0) {
             NamePair pair = this.nameList[this.currentNo];
             this.fontRendererObj.drawString("Name:", originX + 19, originY + 85, this.stringColor);
-            this.fontRendererObj.drawString(pair.unlocalized, originX + 19, originY + 95, this.stringColor);
+            this.fontRendererObj.drawString(pair.localized, originX + 19, originY + 95, this.stringColor);
 
             if (this.displayEntity instanceof EntityLivingBase) {
                 EntityLivingBase living = (EntityLivingBase)this.displayEntity;
@@ -402,7 +401,7 @@ public class GuiMobDictionary extends GuiScreen {
                     originX + 49 * 2,
                     originY,
                     originY + 80
-            )){
+            )) {
                 if (wheel < 0) {
                     this.entityScale /= 1.2F;
                 } else if (wheel > 0) {

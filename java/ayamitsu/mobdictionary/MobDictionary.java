@@ -34,7 +34,7 @@ public class MobDictionary {
 
     public static final String MODID = "mobdictionary";//"ayamitsu.mobdictionary";
     public static final String NAME = "MobDictionary";
-    public static final String VERSION = "3.0.0";
+    public static final String VERSION = "3.0.1";
     public static final String CHANNEL = "AYA|MD";
 
     public static final int GUI_DICTIONARY = 0;

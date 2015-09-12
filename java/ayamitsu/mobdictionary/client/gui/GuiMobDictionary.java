@@ -114,7 +114,11 @@ public class GuiMobDictionary extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.yaw2 = this.yaw;
         this.drawGuiBackgroundLayer(mouseX, mouseY, partialTicks);
-        this.drawMobModel(mouseX, mouseY, partialTicks, this.nameList[this.currentNo].unlocalized);
+
+        if (this.nameList.length > 0) {
+            this.drawMobModel(mouseX, mouseY, partialTicks, this.nameList[this.currentNo].unlocalized);
+        }
+
         this.drawMobInfo(mouseX, mouseY, partialTicks);
         this.drawMobNames(mouseX, mouseY, partialTicks);
         super.drawScreen(mouseX, mouseY, partialTicks);// draw buttons

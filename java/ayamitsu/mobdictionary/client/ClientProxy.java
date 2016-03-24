@@ -5,11 +5,16 @@ import ayamitsu.mobdictionary.MobDictionary;
 import ayamitsu.mobdictionary.client.gui.GuiMobDictionary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.*;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Timer;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -73,23 +78,23 @@ public class ClientProxy extends AbstractProxy {
     }
 
     // from EntityRenderer
-    public MovingObjectPosition getMouseOver(EntityLivingBase viewingEntity, double reach) {
-        float renderPartialTicks = ((Timer)ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, mc, 17)).renderPartialTicks;
-        MovingObjectPosition mop = null;
+    public RayTraceResult getMouseOver(EntityLivingBase viewingEntity, double reach) {
+        float renderPartialTicks = ((Timer)ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, mc, 20)).renderPartialTicks;
+        RayTraceResult mop = null;
 
         if (viewingEntity != null) {
             if (viewingEntity.worldObj != null) {
                 mop = viewingEntity.rayTrace(reach, renderPartialTicks);
-                Vec3 viewPosition = viewingEntity.getPositionEyes(renderPartialTicks);//viewingEntity.getPosition();
+                Vec3d viewPosition = viewingEntity.getPositionEyes(renderPartialTicks);//viewingEntity.getPosition();
                 double d1 = 0;
 
                 if (mop != null) {
                     d1 = mop.hitVec.distanceTo(viewPosition);
                 }
 
-                Vec3 lookVector = viewingEntity.getLook(renderPartialTicks);
-                Vec3 reachVector = viewPosition.addVector(lookVector.xCoord * reach, lookVector.yCoord * reach, lookVector.zCoord * reach);
-                Vec3 vec33 = null;
+                Vec3d lookVector = viewingEntity.getLook(renderPartialTicks);
+                Vec3d reachVector = viewPosition.addVector(lookVector.xCoord * reach, lookVector.yCoord * reach, lookVector.zCoord * reach);
+                Vec3d vec33 = null;
                 float f1 = 1.0F;
                 @SuppressWarnings("unchecked")
                 List<Entity> list = viewingEntity.worldObj.getEntitiesWithinAABBExcludingEntity(
@@ -103,7 +108,7 @@ public class ClientProxy extends AbstractProxy {
                     if (entity.canBeCollidedWith()) {
                         float collisionSize = entity.getCollisionBorderSize();
                         AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().expand(collisionSize, collisionSize, collisionSize);
-                        MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(viewPosition, reachVector);
+                        RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(viewPosition, reachVector);
 
                         if (axisalignedbb.isVecInside(viewPosition)) {
                             if (0.0D < d2 || d2 == 0.0D) {
@@ -115,7 +120,7 @@ public class ClientProxy extends AbstractProxy {
                             double d3 = viewPosition.distanceTo(movingobjectposition.hitVec);
 
                             if (d3 < d2 || d2 == 0.0D) {
-                                if (entity == viewingEntity.ridingEntity && !entity.canRiderInteract()) {
+                                if (entity == viewingEntity.getRidingEntity() && !entity.canRiderInteract()) {
                                     if (d2 == 0.0D) {
                                         pointedEntity = entity;
                                         vec33 = movingobjectposition.hitVec;
@@ -131,7 +136,7 @@ public class ClientProxy extends AbstractProxy {
                 }
 
                 if (pointedEntity != null && (d2 < d1 || mop == null)) {
-                    mop = new MovingObjectPosition(pointedEntity, vec33);
+                    mop = new RayTraceResult(pointedEntity, vec33);
                 }
             }
         }
@@ -140,7 +145,7 @@ public class ClientProxy extends AbstractProxy {
     }
 
     @Override
-    public void printChatMessageClient(IChatComponent chatComponent) {
-        mc.ingameGUI.getChatGUI().printChatMessage(chatComponent);
+    public void printChatMessageClient(ITextComponent textComponent) {
+        mc.ingameGUI.getChatGUI().printChatMessage(textComponent);
     }
 }

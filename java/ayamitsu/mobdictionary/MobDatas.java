@@ -8,11 +8,11 @@ import java.util.*;
 
 /**
  * Created by ayamitsu0321 on 2015/07/28.
- * <p/>
+ * <p>
  * integrated server
  * loadはプレイヤーがログイン時にserver側で。その後serverからclientnに同期
  * saveは登録時
- * <p/>
+ * <p>
  * dedicated server
  * loadはプレイヤーがログイン時にserver側で。その後serverからclientに同期
  * saveは登録時、プレイヤーのUUIDに関連付けて

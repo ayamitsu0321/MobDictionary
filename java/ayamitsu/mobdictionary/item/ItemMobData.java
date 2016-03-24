@@ -9,7 +9,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,7 +31,9 @@ public class ItemMobData extends Item {
         this.setMaxStackSize(1);
     }
 
-    public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn) {
+    @Override
+    //public ItemStack onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand) {
         NBTTagCompound nbt = itemStackIn.getTagCompound();
 
         if (nbt != null) {
@@ -56,7 +61,7 @@ public class ItemMobData extends Item {
 
                     if (worldIn.isRemote) {// client
                         // show chat
-                        ItemMobDictionary.showChatMessage(ItemMobDictionary.EnumChatMessage.ACCEPT, StatCollector.translateToLocal("entity." + name + ".name"));
+                        ItemMobDictionary.showChatMessage(ItemMobDictionary.EnumChatMessage.ACCEPT, I18n.translateToLocal("entity." + name + ".name"));
                     }
 
                     try {
@@ -69,13 +74,13 @@ public class ItemMobData extends Item {
                 } else {
                     if (worldIn.isRemote) {
                         // show chat
-                        ItemMobDictionary.showChatMessage(ItemMobDictionary.EnumChatMessage.ALREADY, StatCollector.translateToLocal("entity." + name + ".name"));
+                        ItemMobDictionary.showChatMessage(ItemMobDictionary.EnumChatMessage.ALREADY, I18n.translateToLocal("entity." + name + ".name"));
                     }
                 }
             }
         }
 
-        return itemStackIn;
+        return new ActionResult(EnumActionResult.PASS, itemStackIn);
     }
 
     @SuppressWarnings("unchecked")
@@ -90,10 +95,10 @@ public class ItemMobData extends Item {
             if (name != null && name.length() > 0) {
                 if (EntityUtils.isLivingName(name)) {
                     // translate
-                    name = StatCollector.translateToLocal(new StringBuilder().append("entity.").append(name).append(".name").toString());
+                    name = I18n.translateToLocal(new StringBuilder().append("entity.").append(name).append(".name").toString());
                 }
 
-                sb = new StringBuilder().append(StatCollector.translateToLocal("mobdictionary.common.name")).append(":").append(name);
+                sb = new StringBuilder().append(I18n.translateToLocal("mobdictionary.common.name")).append(":").append(name);
                 tooltip.add(sb.toString());
             }
         }

@@ -17,9 +17,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -87,7 +87,7 @@ public class GuiMobDictionary extends GuiScreen {
         //あらかじめローカライズしておく
         for (int i = 0; i < names.length; i++) {
             if (EntityUtils.containsName(names[i])) {
-                this.nameList[i] = new NamePair(names[i], StatCollector.translateToLocal("entity." + names[i] + ".name"));
+                this.nameList[i] = new NamePair(names[i], I18n.translateToLocal("entity." + names[i] + ".name"));
             } else {
                 this.nameList[i] = new NamePair(names[i], names[i]);
             }
@@ -264,7 +264,7 @@ public class GuiMobDictionary extends GuiScreen {
 
             RenderManager manager = this.mc.getRenderManager();
             manager.playerViewY = 180F;
-            manager.renderEntityWithPosYaw(this.displayEntity, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
+            manager.doRenderEntity(this.displayEntity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, false);
             GL11.glPopMatrix();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         }
@@ -286,14 +286,14 @@ public class GuiMobDictionary extends GuiScreen {
             List<String> list = new ArrayList<String>();
 
             for (Object obj : tooltipStringList) {
-                list.add(StatCollector.translateToLocal((String)obj));
+                list.add(I18n.translateToLocal((String)obj));
             }
 
             for (int i = 0; i < list.size(); i++) {
                 if (i == 0) {
                     list.set(i, list.get(i));
                 } else {
-                    list.set(i, EnumChatFormatting.GRAY + list.get(i));
+                    list.set(i, TextFormatting.GRAY + list.get(i));
                 }
             }
 
@@ -312,14 +312,28 @@ public class GuiMobDictionary extends GuiScreen {
                 EntityPlayer player = this.mc.thePlayer;
                 InventoryPlayer inventory = player.inventory;
 
-                if (inventory.hasItem(Items.paper)) {// 紙があるか
+                if (inventory.hasItemStack(new ItemStack(Items.paper))) {// 紙があるか
                     if (inventory.getFirstEmptyStack() > 0) {// インベントリに空きがあるか
                         ItemStack itemStack = new ItemStack(MobDictionary.mobData);
                         NBTTagCompound nbt = new NBTTagCompound();
                         ItemMobData.setEntityNameToNBT(this.nameList[this.currentNo].unlocalized, nbt);
                         itemStack.setTagCompound(nbt);
 
-                        inventory.consumeInventoryItem(Items.paper);
+                        //inventory.consumeInventoryItem(Items.paper);
+                        int size = inventory.mainInventory.length;
+
+                        for (int i = 0; i < size; i++) {
+                            ItemStack is = inventory.mainInventory[i];
+
+                            if (is.getItem() == Items.paper) {
+                                if (--inventory.mainInventory[i].stackSize <= 0) {
+                                    inventory.mainInventory[i] = null;
+                                }
+
+                                break;
+                            }
+                        }
+
                         inventory.addItemStackToInventory(itemStack);
                     }
                 }

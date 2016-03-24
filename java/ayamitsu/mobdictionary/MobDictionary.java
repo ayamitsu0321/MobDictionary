@@ -10,7 +10,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -34,7 +34,7 @@ public class MobDictionary {
 
     public static final String MODID = "mobdictionary";//"ayamitsu.mobdictionary";
     public static final String NAME = "MobDictionary";
-    public static final String VERSION = "3.0.1";
+    public static final String VERSION = "3.0.2";
     public static final String CHANNEL = "AYA|MD";
 
     public static final int GUI_DICTIONARY = 0;
@@ -73,7 +73,7 @@ public class MobDictionary {
         //LanguageRegistry.instance().addNameForObject(this.dictionaryItem, "ja_JP", "モブ図鑑");
 
         GameRegistry.addShapelessRecipe(new ItemStack(this.mobDictionary, 1),
-                new Object[]{
+                new Object[] {
                         new ItemStack(Items.book, 1),
                         new ItemStack(Blocks.sapling, 1, 0),
                         new ItemStack(Blocks.sapling, 1, 1),
@@ -92,7 +92,7 @@ public class MobDictionary {
         );*/
 
 
-        FMLCommonHandler.instance().bus().register(new PlayerLoggedInHandler());
+        MinecraftForge.EVENT_BUS.register(new PlayerLoggedInHandler());
         PacketHandler.INSTANCE.init();
         proxy.preInit();
     }

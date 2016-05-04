@@ -2,8 +2,8 @@ package ayamitsu.mobdictionary;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.ITextComponent;
 
 import java.io.File;
 
@@ -33,11 +33,11 @@ public abstract class AbstractProxy {
         return null;
     }
 
-    public MovingObjectPosition getMouseOver(EntityLivingBase viewingEntity, double reach) {
+    public RayTraceResult getMouseOver(EntityLivingBase viewingEntity, double reach) {
         return null;
     }
 
-    public void printChatMessageClient(IChatComponent chatComponent) {
+    public void printChatMessageClient(ITextComponent textComponent) {
     }
 
 }

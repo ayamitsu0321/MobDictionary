@@ -1,7 +1,6 @@
 package ayamitsu.mobdictionary.server;
 
 import ayamitsu.mobdictionary.AbstractProxy;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.server.FMLServerHandler;
 
@@ -25,7 +24,7 @@ public class ServerProxy extends AbstractProxy {
 
     @Override
     public boolean isDedicatedServer() {
-        return MinecraftServer.getServer().isDedicatedServer();
+        return FMLServerHandler.instance().getServer().isDedicatedServer();
     }
 
     @Override

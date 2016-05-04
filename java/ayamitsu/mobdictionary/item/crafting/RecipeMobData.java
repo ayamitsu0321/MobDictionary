@@ -32,7 +32,7 @@ public class RecipeMobData implements IRecipe {
                 if (item.getItem() == MobDictionary.mobData) {
                     dataCount += 1;
                     data = item;
-                } else if (item.getItem() == Items.paper) {
+                } else if (item.getItem() == Items.PAPER) {
                     paperCount += 1;
                 }
             }

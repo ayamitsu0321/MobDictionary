@@ -312,7 +312,7 @@ public class GuiMobDictionary extends GuiScreen {
                 EntityPlayer player = this.mc.thePlayer;
                 InventoryPlayer inventory = player.inventory;
 
-                if (inventory.hasItemStack(new ItemStack(Items.paper))) {// 紙があるか
+                if (inventory.hasItemStack(new ItemStack(Items.PAPER))) {// 紙があるか
                     if (inventory.getFirstEmptyStack() > 0) {// インベントリに空きがあるか
                         ItemStack itemStack = new ItemStack(MobDictionary.mobData);
                         NBTTagCompound nbt = new NBTTagCompound();
@@ -325,7 +325,7 @@ public class GuiMobDictionary extends GuiScreen {
                         for (int i = 0; i < size; i++) {
                             ItemStack is = inventory.mainInventory[i];
 
-                            if (is.getItem() == Items.paper) {
+                            if (is != null && is.getItem() == Items.PAPER) {
                                 if (--inventory.mainInventory[i].stackSize <= 0) {
                                     inventory.mainInventory[i] = null;
                                 }

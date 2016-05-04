@@ -52,9 +52,9 @@ public class ItemMobDictionary extends Item {
                     //System.out.println(living.getName());
 
                     if (MobDatas.contains(clazz)) {
-                        if (hasItemPlayer(playerIn, Items.paper)) {
+                        if (hasItemPlayer(playerIn, Items.PAPER)) {
                             if (hasEmptyPlayer(playerIn)) {
-                                consumeItemPlayer(playerIn, Items.paper);
+                                consumeItemPlayer(playerIn, Items.PAPER);
                                 ItemStack is = new ItemStack(MobDictionary.mobData);
                                 NBTTagCompound nbt = new NBTTagCompound();
                                 ItemMobData.setEntityNameToNBT(EntityList.getEntityString(living), nbt);

@@ -10,16 +10,14 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.RecipeSorter;
 
 /**
@@ -54,8 +52,8 @@ public class MobDictionary {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        this.mobDictionary = new ItemMobDictionary().setUnlocalizedName("mobdictionary.dictionary");
-        this.mobData = new ItemMobData().setCreativeTab(tabMobDictionary).setUnlocalizedName("mobdictionary.data");
+        mobDictionary = new ItemMobDictionary().setUnlocalizedName("mobdictionary.dictionary").setRegistryName(new ResourceLocation(MODID, "dictionary"));
+        mobData = new ItemMobData().setCreativeTab(tabMobDictionary).setUnlocalizedName("mobdictionary.data").setRegistryName(new ResourceLocation(MODID, "data"));
 
         tabMobDictionary = new CreativeTabs("mobdictionary") {
             @Override
@@ -64,22 +62,19 @@ public class MobDictionary {
             }
         };
 
-        this.mobDictionary.setCreativeTab(tabMobDictionary);
-        this.mobData.setCreativeTab(tabMobDictionary);
-        GameRegistry.registerItem(this.mobDictionary, "dictionary");
-        GameRegistry.registerItem(this.mobData, "data");
+        mobDictionary.setCreativeTab(tabMobDictionary);
+        mobData.setCreativeTab(tabMobDictionary);
+        //GameRegistry.registerItem(this.mobDictionary, "dictionary");
+        //GameRegistry.registerItem(this.mobData, "data");
+        GameRegistry.register(mobDictionary);
+        GameRegistry.register(mobData);
 
-        //LanguageRegistry.instance().addNameForObject(this.dictionaryItem, "en_US", "Mob Dictionary");
-        //LanguageRegistry.instance().addNameForObject(this.dictionaryItem, "ja_JP", "モブ図鑑");
-
-        GameRegistry.addShapelessRecipe(new ItemStack(this.mobDictionary, 1),
-                new Object[] {
-                        new ItemStack(Items.book, 1),
-                        new ItemStack(Blocks.sapling, 1, 0),
-                        new ItemStack(Blocks.sapling, 1, 1),
-                        new ItemStack(Blocks.sapling, 1, 2),
-                        new ItemStack(Blocks.sapling, 1, 3)
-                }
+        GameRegistry.addShapelessRecipe(new ItemStack(mobDictionary, 1),
+                new ItemStack(Items.BOOK, 1),
+                new ItemStack(Blocks.SAPLING, 1, 0),
+                new ItemStack(Blocks.SAPLING, 1, 1),
+                new ItemStack(Blocks.SAPLING, 1, 2),
+                new ItemStack(Blocks.SAPLING, 1, 3)
         );
 
         RecipeSorter.register("mobdictionary:data", RecipeMobData.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
@@ -117,50 +112,4 @@ public class MobDictionary {
         proxy.postInit();
     }
 
-    /*
-        for multi-server only
-     */
-    @SideOnly(Side.SERVER)
-    @Mod.EventHandler
-    public void serverStoppingServer(FMLServerStoppingEvent event) {
-        /*try {
-            MobDatas.save(event);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        // System.out.println("MobDictionary saving");
-
-        // マルチ鯖の一番上のディレクトリのパス
-        // config, mods, worldなどがあるディレクトリ
-        //System.out.println(FMLServerHandler.instance().getSavesDirectory().getAbsolutePath());
-    }
-
-    /*
-        for integrated server only
-     */
-    @SideOnly(Side.CLIENT)
-    @Mod.EventHandler
-    public void serverStoppingClient(FMLServerStoppingEvent event) {
-        //System.out.println("Side:" + FMLCommonHandler.instance().getEffectiveSide().toString());
-    }
-/*
-    @Mod.EventHandler
-    public void serverStarted(FMLServerStartedEvent event) {
-        try {
-            MobDatas.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Mod.EventHandler
-    public void serverStopped(FMLServerStoppedEvent event) {
-        try {
-            MobDatas.save();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-*/
 }
